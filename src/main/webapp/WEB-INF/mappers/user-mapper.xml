@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+    <insert id="create" parameterType="user">
+        insert * into users (id, password, name, avatar_id, login_count, study_time)
+        values (#{id}, #{password}, #{name}, #{avatarId}, 0, 0})
+    </insert>
+    <select id="findById" resultType="user" parameterType="string">
+        select * from users where id=#{id}
+    </select>
+</mapper>
