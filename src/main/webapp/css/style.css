@@ -1,15 +1,31 @@
 @font-face {
-    font-family: 'GmarketSansMedium';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-family: 'Cafe24Ohsquare';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/Cafe24Ohsquare.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-}
+}+
 
 * {
-    font-family: 'GmarketSansMedium', cursive;
+    font-family: 'Cafe24Ohsquare', cursive;
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
+}
+
+/* related width */
+.w-50 {
+    width: 50%;
+}
+.w-100 {
+    width: 100%;
+}
+
+/* related index page*/
+.main {
+    display: flex;
+    max-width: 1000px;
+    margin: auto;
+    align-items: center;
 }
