@@ -18,6 +18,7 @@ public class WelcomeController {
     public String indexHandle(HttpSession session, Model model) {
         if (session.getAttribute("user") == null) {   // 인증 성공했으면
             return "index";
+
         } else {   // 인증을 받지 않았으면
             User user = (User)session.getAttribute("user");
             model.addAttribute("user", user);

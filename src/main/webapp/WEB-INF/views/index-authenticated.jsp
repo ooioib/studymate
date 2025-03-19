@@ -15,7 +15,7 @@
 
         </div>
         <div>
-            <a href="${pageContext.request.contextPath}/my">
+            <a href="${pageContext.request.contextPath}/my/profile">
                 <img src="${pageContext.request.contextPath}${userAvatar.imageUrl}" style="height: 35px"/>
             </a>
         </div>

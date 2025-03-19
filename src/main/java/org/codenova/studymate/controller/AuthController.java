@@ -68,7 +68,6 @@ public class AuthController {
             return "auth/login/verify-failed";
 
         } else {
-
             userRepository.updateLoginCountByUserId(id);
             loginLogRepository.create(id);
 
@@ -76,5 +75,11 @@ public class AuthController {
 
             return "redirect:/index";
         }
+    }
+
+    @RequestMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/index";
     }
 }
