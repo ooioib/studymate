@@ -6,4 +6,9 @@
     <select id="findAll" resultType="avatar">
         select * from avatars order by id asc
     </select>
+
+    <select id="findById" resultType="avatar" parameterType="int">
+        select * from avatars where id = #{id}
+    </select>
+
 </mapper>
