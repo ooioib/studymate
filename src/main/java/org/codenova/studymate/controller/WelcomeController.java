@@ -16,21 +16,18 @@ public class WelcomeController {
 
     @RequestMapping({"/", "/index"})
     public String indexHandle(HttpSession session, Model model) {
-        if (session.getAttribute("user") == null) {   // 인증 성공했으면
+        if (session.getAttribute("user") == null) {
             return "index";
-
-        } else {   // 인증을 받지 않았으면
-            User user = (User)session.getAttribute("user");
+        } else {
+            User user = (User) session.getAttribute("user");
             model.addAttribute("user", user);
 
-            // int avatarId = user.getAvatarId();
             Avatar userAvatar = avatarRepository.findById(user.getAvatarId());
-
-            System.out.println(userAvatar);
             model.addAttribute("userAvatar", userAvatar);
-            model.addAttribute("user", user);
+
 
             return "index-authenticated";
         }
+
     }
 }

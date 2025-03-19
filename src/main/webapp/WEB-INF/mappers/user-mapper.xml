@@ -10,7 +10,6 @@
 <select id="findById" resultType="user" parameterType="string">
     select * from users where id = #{id}</select>
 <update id="updateLoginCountByUserId" parameterType="string">
-    update users set login_count = login_count + 1 where
-    id=#{id}
+    update study_groups set member_count = member_count + 1 where id = #{id}
 </update>
 </mapper>

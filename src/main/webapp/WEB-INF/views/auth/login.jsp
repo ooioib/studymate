@@ -16,13 +16,13 @@
     <h1 style="font-size: 1.7em">로그인</h1>
     <form action="${pageContext.request.contextPath}/auth/login/verify" method="post" style="margin-top: 30px">
         <div class="auth-input-div">
-            <input type="text" name="id" value="${id}" placeholder="아이디" class="auth-input"/>
+            <input type="text" placeholder="아이디" class="auth-input" name="id"/>
         </div>
         <div class="auth-input-div">
-            <input type="password" name="password" placeholder="비밀번호" class="auth-input"/>
+            <input type="password" placeholder="비밀번호" class="auth-input" name="password"/>
         </div>
         <div class="auth-input-div">
-            <button type="submit" class="auth-input">로그인</button>
+            <button type="submit" class="auth-input">확인</button>
         </div>
     </form>
     <p>

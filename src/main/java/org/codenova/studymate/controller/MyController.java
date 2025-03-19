@@ -18,10 +18,10 @@ public class MyController {
 
     @RequestMapping("/profile")
     public String profileHandle(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        model.addAttribute("user", user);
-        LoginLog latestLog = loginLogRepository.findLatestByUserId(user.getId());
-        model.addAttribute("latestLog", latestLog);
+        User user =(User)session.getAttribute("user");
+        model.addAttribute("user",user);
+        LoginLog latestLog =loginLogRepository.findLatestByUserId(user.getId());
+        model.addAttribute("latestLog",latestLog);
 
         return "my/profile";
     }

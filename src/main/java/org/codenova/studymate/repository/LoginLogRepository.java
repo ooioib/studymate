@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public class LoginLogRepository {
+
     @Autowired
     private SqlSessionTemplate sqlSessionTemplate;
 
