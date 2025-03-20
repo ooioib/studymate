@@ -19,9 +19,7 @@
 </div>
 <div class="index-main">
     <div class="w-50">
-
         <img src="${pageContext.request.contextPath}/image/logo.png" class="w-100"/>
-
     </div>
     <h1>공부가 쉬워진다!<br/>
         우리끼리 스터디메이트</h1>

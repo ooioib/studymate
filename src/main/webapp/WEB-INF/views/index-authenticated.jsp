@@ -8,11 +8,20 @@
 <body>
 <div class="bottom-border-div">
     <div class="index-header wrap">
-        <div>
+        <div style="display:flex; gap:15px; align-items: center">
             <a href="${pageContext.request.contextPath}/index">
                 <img src="${pageContext.request.contextPath}/image/header-logo.png" style="height: 35px"/>
             </a>
-
+            <form action="${pageContext.request.contextPath}/study/search" style="margin: 0">
+                <input type="text" name="word" style="border-radius: 20px; width:300px; padding:4px 15px;
+background-color: #afafaf; color:white" placeholder="스터디 검색" value="${param.word}">
+            </form>
+        </div>
+        <div class="index-main wrap">
+            <div>
+                <a href="${pageContext.request.contextPath}/study/create">그룹 생성</a> |
+                <a href="${pageContext.request.contextPath}/study/search?word">그룹 목록</a>
+            </div>
         </div>
         <div>
             <a href="${pageContext.request.contextPath}/my/profile">

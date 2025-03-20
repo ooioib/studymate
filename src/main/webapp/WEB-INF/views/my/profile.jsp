@@ -38,8 +38,8 @@
             <div class="account">
                 <h3>로그인 계정</h3>
                 <ul>
-                    <li>아이디 <span>${user.id }</span></li>
-                    <li>활동명 <span>${user.name }</span></li>
+                    <li>아이디 <span>${user.id}</span></li>
+                    <li>활동명 <span>${user.name}</span></li>
                 </ul>
             </div>
             <div class="info">

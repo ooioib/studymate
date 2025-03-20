@@ -1,7 +1,7 @@
 package org.codenova.studymate.repository;
 
 import lombok.AllArgsConstructor;
-import org.codenova.studymate.model.StudyMember;
+import org.codenova.studymate.model.entity.StudyMember;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 

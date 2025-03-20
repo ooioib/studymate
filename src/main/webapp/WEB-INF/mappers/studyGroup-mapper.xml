@@ -6,7 +6,14 @@
 
     <insert id="create" parameterType="studyGroup">
         insert into study_groups (id, name, type, goal, creator_id, created_at, member_count)
-        values (#{id}, #{name}, #{type}, #{goal}, #{creatorId}, now(), 0) </insert>
+        values (#{id}, #{name}, #{type}, #{goal}, #{creatorId}, now(), 0)
+    </insert>
+
     <update id="addMemberCountById" parameterType="string">
-        update study_groups set member_count = member_count + 1 where id = #{id} </update>
+        update study_groups set member_count = member_count + 1 where id = #{id}
+    </update>
+
+    <select id="findByNameLikeOrGoalLike" parameterType="string" resultType="studyGroup">
+        select * from study_groups where name like #{word} or goal like #{word}
+    </select>
 </mapper>

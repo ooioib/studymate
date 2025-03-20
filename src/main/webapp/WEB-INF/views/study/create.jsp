@@ -21,7 +21,7 @@
         </div>
     </div>
 </div>
-<div >
+<div>
     <div class="study-main wrap">
         <form style="padding: 20px 0px;" method="post"
               action="${pageContext.request.contextPath}/study/create/verify">
@@ -35,9 +35,9 @@
             </div>
             <label class="label">스터디 공개</label>
             <div class="type-box">
-                <div >
+                <div>
                     <label style="display: block; font-weight:bold">
-                        <input type="radio" name="type" value="공개" />
+                        <input type="radio" name="type" value="공개"/>
                         공개 스터디
                     </label>
                     <p>
@@ -56,6 +56,7 @@
             </div>
             <div class="buttons">
                 <button type="reset">취소</button>
+
                 <button type="submit">완료</button>
             </div>
         </form>
