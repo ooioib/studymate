@@ -46,7 +46,7 @@
                 <h3>로그인 내역</h3>
                 <ul>
                     <li>로그인 회수 <span>${user.loginCount}</span></li>
-                    <li>최근 로그인 <span>${latestLog.loginAt}</span></li>
+                    <li>최근 로그인 <span>${latestLog.loginAt.toString().replace('T', '  ')}</span></li>
                 </ul>
             </div>
             <div class="info">

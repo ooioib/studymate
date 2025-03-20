@@ -1,6 +1,5 @@
 package org.codenova.studymate.repository;
 
-
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.StudyGroup;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -15,8 +14,8 @@ public class StudyGroupRepository {
         return sqlSessionTemplate.insert("studyGroup.create", studyGroup);
     }
 
-    public int addMemberCountById(String id) {
+    public int addMemberCountById(String id){
         return sqlSessionTemplate.update("studyGroup.addMemberCountById", id);
-
     }
+
 }

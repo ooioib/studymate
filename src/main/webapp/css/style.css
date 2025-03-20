@@ -1,12 +1,11 @@
 @font-face {
-    font-family: 'HakgyoansimAllimjangTTF-R';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimAllimjangTTF-R.woff2') format('woff2');
-    font-weight: 400;
+    font-family: 'Paperlogy-5Medium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2') format('woff2');
+    font-weight: 800;
     font-style: normal;
 }
-
 * {
-    font-family: 'HakgyoansimAllimjangTTF-R';
+    font-family: 'Paperlogy-5Medium';
     font-weight: 400;
     box-sizing: border-box;
     color : #444;
@@ -163,4 +162,38 @@ body {
 }
 .my-main .content  span {
     font-size: 1.5em;
+}
+
+
+/* related study page --------------------------------------*/
+.study-main .label{
+    display: block;
+    padding : 40px 0px 10px 0px;
+    font-weight: bold;
+}
+.study-main .input-text {
+    display: block;
+    width:100%;
+    font-size : 1.7rem;
+    border : 0;
+    padding-bottom : 10px;
+}
+.study-main .input-text:focus {
+    outline: none;
+}
+.study-main .type-box {
+    background-color: #f4f4f4;
+    padding : 35px;
+    display: flex;
+    justify-content: space-around;
+}
+.study-main .type-box div{
+    width : 35%;
+}
+.study-main .buttons {
+    text-align: center;
+    padding : 30px 0px;
+}
+.study-main .buttons button{
+    padding : 8px 32px;
 }

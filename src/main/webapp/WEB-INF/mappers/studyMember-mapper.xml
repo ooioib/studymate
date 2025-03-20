@@ -5,18 +5,16 @@
 
 <!-- 공개 방에 참여 하는 사람들 (이미 승인된 데이터)-->
 <mapper namespace="studyMember">
-    <insert id="createAutoApproved" parameterType="studyMember">
-        insert into study_members (user_id, group_id, role, goal, applied_at, joined_at)
-        values (#{userId}, #{groupId}, #{role}, now(), now())
+    <insert id="createApproved" parameterType="studyMember">
+        insert into study_members (user_id, group_id, role, applied_at, joined_at)
+        values (#{userId}, #{groupId}, #{role}, now(), now() )
     </insert>
 
     <!-- 비공개 방에 참여하는 사람들 (관리자 승인으로 인해 대기 필요한 데이터) -->
     <insert id="createPending" parameterType="studyMember">
-        insert into study_members (user_id, group_id, role, goal, applied_at)
-        values (#{userId}, #{groupId}, #{role}, now())
-    </insert>
+        insert into study_members (user_id, group_id, role, applied_at)
+        values (#{userId}, #{groupId}, #{role}, now() ) </insert>
 
     <update id="updateJoinedAtById" parameterType="int">
-        update study_members set joined_at = now() where id=#{id}
-    </update>
+        update study_members set joined_at = now() where id= #{id} </update>
 </mapper>

@@ -5,8 +5,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Setter
+@Getter
 
 public class StudyGroup {
 
