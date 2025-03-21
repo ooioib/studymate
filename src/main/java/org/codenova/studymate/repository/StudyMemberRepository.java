@@ -5,6 +5,9 @@ import org.codenova.studymate.model.entity.StudyMember;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Map;
+
 @Repository
 @AllArgsConstructor
 public class StudyMemberRepository {
@@ -20,5 +23,15 @@ public class StudyMemberRepository {
 
     public int updateJoinedAtById(int id) {
         return sqlSessionTemplate.update("studyMember.updateJoinedAtById", id);
+    }
+
+
+    public List<StudyMember> findByUserId(String userId) {
+        return sqlSessionTemplate.selectList("studyMember.findByUserId", userId);
+    }
+
+    // Vo 객체를 만들지 않고도 데이터를 뽑을 수 있게 Map을 이용해서 처리
+    public StudyMember findByUserIdAndGroupId(Map params) {
+        return sqlSessionTemplate.selectOne("studyMember.findByUserIdAndGroupId", params);
     }
 }

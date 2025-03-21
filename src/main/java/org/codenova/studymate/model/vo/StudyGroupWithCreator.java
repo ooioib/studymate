@@ -12,7 +12,4 @@ import org.codenova.studymate.model.entity.User;
 public class StudyGroupWithCreator {
     private StudyGroup group;
     private User creator;
-
-
-
 }

@@ -23,4 +23,8 @@ public class StudyGroupRepository {
     public List<StudyGroup> findByNameLikeOrGoalLike(String word) {
         return sqlSessionTemplate.selectList("studyGroup.findByNameLikeOrGoalLike", word);
     }
+
+    public StudyGroup findById(String id) {
+        return sqlSessionTemplate.selectOne("studyGroup.findById", id);
+    }
 }

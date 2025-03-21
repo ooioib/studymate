@@ -32,7 +32,7 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
         <c:forEach items="${result}" var="one">
             <div style="border-bottom: 1px solid  rgba(0,0,0,.08); padding : 20px 0px;">
                 <h3 style="font-weight: 400">
-                    <a href="#" style="text-underline-offset: 10px">${one.group.name}</a>
+                    <a href="${pageContext.request.contextPath}/study/${one.group.id}" style="text-underline-offset: 10px">${one.group.name}</a>
                 </h3>
                 <div>
                         ${one.group.goal}

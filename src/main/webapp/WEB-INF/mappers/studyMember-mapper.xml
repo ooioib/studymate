@@ -17,4 +17,14 @@
 
     <update id="updateJoinedAtById" parameterType="int">
         update study_members set joined_at = now() where id= #{id} </update>
+
+    <select id="findByUserId" parameterType="String" resultType="studyMember">
+        select * from study_members where user_id = #{userId}
+    </select>
+
+    <select id="findByUserIdAndGroupId" parameterType="hashmap" resultType="studyMember">
+        select * from study_members where user_id = #{userId} and group_id = #{groupId}
+    </select>
+
+
 </mapper>

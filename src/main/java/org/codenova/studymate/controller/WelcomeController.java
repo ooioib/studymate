@@ -25,7 +25,6 @@ public class WelcomeController {
             Avatar userAvatar = avatarRepository.findById(user.getAvatarId());
             model.addAttribute("userAvatar", userAvatar);
 
-
             return "index-authenticated";
         }
 
