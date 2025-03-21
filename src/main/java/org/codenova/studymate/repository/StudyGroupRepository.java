@@ -16,15 +16,19 @@ public class StudyGroupRepository {
         return sqlSessionTemplate.insert("studyGroup.create", studyGroup);
     }
 
-    public int addMemberCountById(String id) {
+    public int addMemberCountById(String id){
         return sqlSessionTemplate.update("studyGroup.addMemberCountById", id);
     }
 
-    public List<StudyGroup> findByNameLikeOrGoalLike(String word) {
+    public int subtractMemberCountById(String id){
+        return sqlSessionTemplate.update("studyGroup.subtractMemberCountById", id);
+    }
+
+    public List<StudyGroup> findByNameLikeOrGoalLike(String word){
         return sqlSessionTemplate.selectList("studyGroup.findByNameLikeOrGoalLike", word);
     }
 
-    public StudyGroup findById(String id) {
+    public StudyGroup findById(String id){
         return sqlSessionTemplate.selectOne("studyGroup.findById", id);
     }
 }

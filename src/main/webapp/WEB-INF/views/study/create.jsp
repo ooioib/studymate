@@ -56,7 +56,6 @@
             </div>
             <div class="buttons">
                 <button type="reset">취소</button>
-
                 <button type="submit">완료</button>
             </div>
         </form>

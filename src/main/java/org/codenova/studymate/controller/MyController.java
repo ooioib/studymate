@@ -26,9 +26,11 @@ public class MyController {
         }
         model.addAttribute("user",user);
         model.addAttribute("hiddenId", user.getId().substring(0, 2)+"******");
+
         LoginLog latestLog =loginLogRepository.findLatestByUserId(user.getId());
         model.addAttribute("latestLog",latestLog);
         model.addAttribute("userAvatar", avatarRepository.findById(user.getAvatarId()));
+
         return "my/profile";
     }
 }

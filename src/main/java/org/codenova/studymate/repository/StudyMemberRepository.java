@@ -25,7 +25,6 @@ public class StudyMemberRepository {
         return sqlSessionTemplate.update("studyMember.updateJoinedAtById", id);
     }
 
-
     public List<StudyMember> findByUserId(String userId) {
         return sqlSessionTemplate.selectList("studyMember.findByUserId", userId);
     }
@@ -33,5 +32,9 @@ public class StudyMemberRepository {
     // Vo 객체를 만들지 않고도 데이터를 뽑을 수 있게 Map을 이용해서 처리
     public StudyMember findByUserIdAndGroupId(Map params) {
         return sqlSessionTemplate.selectOne("studyMember.findByUserIdAndGroupId", params);
+    }
+
+    public int deleteById(int id) {
+        return sqlSessionTemplate.delete("studyMember.deleteById", id);
     }
 }

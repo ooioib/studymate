@@ -53,7 +53,9 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
                     </c:when>
                     <c:when test="${status == 'MEMBER'}">
                         <p>
-                            <button style="width: 100%; padding: 5px; font-size:1em;" disabled>스터디 탈퇴하기</button>
+                            <a href="${pageContext.request.contextPath}/study/${group.id}/leave">
+                                <button style="width: 100%; padding: 5px; font-size:1em;" >스터디 탈퇴하기</button>
+                            </a>
                         </p>
                     </c:when>
                     <c:otherwise>
