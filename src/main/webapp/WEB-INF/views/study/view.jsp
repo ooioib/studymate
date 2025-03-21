@@ -35,7 +35,7 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
                     리더 <span>${group.creatorId}</span>
                 </div>
                 <div style="font-size : 0.8em">
-                    개설일 <span>${group.createdAt}</span>
+                    개설일 <span>${group.createdAt.toString().replace('T', '  ')}</span>
                 </div>
                 ${status}
                 <c:choose>
@@ -54,13 +54,15 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
                     <c:when test="${status == 'MEMBER'}">
                         <p>
                             <a href="${pageContext.request.contextPath}/study/${group.id}/leave">
-                                <button style="width: 100%; padding: 5px; font-size:1em;" >스터디 탈퇴하기</button>
+                                <button style="width: 100%; padding: 5px; font-size:1em;">스터디 탈퇴하기</button>
                             </a>
                         </p>
                     </c:when>
                     <c:otherwise>
                         <p>
-                            <button style="width: 100%; padding: 5px; font-size:1em;" disabled>스터디 해산하기</button>
+                            <a href="${pageContext.request.contextPath}/study/${group.id}/remove">
+                            <button style="width: 100%; padding: 5px; font-size:1em;">스터디 해산하기</button>
+                            </a>
                         </p>
                     </c:otherwise>
                 </c:choose>

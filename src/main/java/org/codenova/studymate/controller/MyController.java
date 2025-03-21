@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 public class MyController {
     private LoginLogRepository loginLogRepository;
     private AvatarRepository avatarRepository;
+
     @RequestMapping("/profile")
     public String profileHandle(Model model, @SessionAttribute("user") @Nullable User user) {
         // User user =(User)session.getAttribute("user");

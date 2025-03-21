@@ -6,23 +6,38 @@
 
 <!-- 공개 방에 참여 하는 사람들 (이미 승인된 데이터)-->
 <mapper namespace="studyMember">
-    <insert id="createApproved" parameterType="studyMember">insert into study_members (user_id, group_id, role,
-        applied_at, joined_at) values (#{userId}, #{groupId}, #{role}, now(), now() )
+    <insert id="createApproved" parameterType="studyMember">
+        insert into study_members (user_id, group_id, role, applied_at, joined_at) values (#{userId}, #{groupId},
+        #{role}, now(), now() )
     </insert>
 
     <!-- 비공개 방에 참여하는 사람들 (관리자 승인으로 인해 대기 필요한 데이터) -->
     <insert id="createPending" parameterType="studyMember">
         insert into study_members (user_id, group_id, role, applied_at) values (#{userId}, #{groupId}, #{role}, now() )
     </insert>
+
     <update id="updateJoinedAtById" parameterType="int">
-        update study_members set joined_at = now() where id= #{id }
+        update study_members set joined_at = now() where id= #{id}
     </update>
+
     <select id="findByUserId" parameterType="string" resultType="studyMember">
         select * from study_members where user_id = #{userId}
     </select>
+
     <select id="findByUserIdAndGroupId" resultType="studyMember" parameterType="hashmap">
         select * from study_members where user_id = #{userId} and group_id = #{groupId}
     </select>
-    <delete id="deleteById" parameterType="int">delete from study_members where id = #{id}
+
+    <delete id="deleteById" parameterType="int">
+        delete from study_members where id = #{id}
     </delete>
+
+    <!--스터디 그룹 삭제-->
+    <delete id="deleteByGroupId" parameterType="string">
+        delete from study_members where group_id = #{groupId}
+    </delete>
+
+    <!--스터디 그룹 가입 승인-->
+
+
 </mapper>
