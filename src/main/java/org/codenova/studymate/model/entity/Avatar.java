@@ -8,6 +8,6 @@ import lombok.Setter;
 public class Avatar {
     private int id;
     private String name;
-    private String imageUrl;
+    private String ImageUrl;
 }
 

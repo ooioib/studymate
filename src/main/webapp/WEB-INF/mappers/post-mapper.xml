@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="post">
+    <insert id="create" parameterType="post">
+        insert into posts (group_id, writer_id, content, wrote_at)
+        values( #{groupId}, #{writerId}, #{content}, #{wroteAt} )
+    </insert>
+    <select id="findByGroupId" resultType="post" parameterType="string">
+        select * from posts where group_id =#{groupId} order by wrote_at desc
+    </select>
+</mapper>
+
