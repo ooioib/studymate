@@ -16,12 +16,12 @@
         </div>
         <div>
             <a href="${pageContext.request.contextPath}/my/profile">
-                <img src="${pageContext.request.contextPath}${userAvatar.imageUrl}" style="height: 35px"/>
+                <img src="${pageContext.request.contextPath}${user.avatarUrl}" style="height: 35px"/>
             </a>
         </div>
     </div>
 </div>
-<div>
+<div >
     <div class="study-main wrap">
         <form style="padding: 20px 0px;" method="post"
               action="${pageContext.request.contextPath}/study/create/verify">
@@ -35,9 +35,9 @@
             </div>
             <label class="label">스터디 공개</label>
             <div class="type-box">
-                <div>
+                <div >
                     <label style="display: block; font-weight:bold">
-                        <input type="radio" name="type" value="공개"/>
+                        <input type="radio" name="type" value="공개" />
                         공개 스터디
                     </label>
                     <p>
