@@ -20,7 +20,7 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
         </div>
         <div>
             <a href="${pageContext.request.contextPath}/my/profile">
-                <img src="${pageContext.request.contextPath}${userAvatar.imageUrl}" style="height: 35px"/>
+                <img src="${pageContext.request.contextPath}${user.avatarUrl}" style="height: 35px"/>
             </a>
         </div>
     </div>

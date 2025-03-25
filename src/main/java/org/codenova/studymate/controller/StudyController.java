@@ -2,6 +2,7 @@ package org.codenova.studymate.controller;
 
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.*;
+import org.codenova.studymate.model.query.UserWithAvatar;
 import org.codenova.studymate.model.vo.PostMeta;
 import org.codenova.studymate.model.vo.StudyGroupWithCreator;
 import org.codenova.studymate.repository.*;
@@ -19,13 +20,20 @@ import java.util.*;
 @RequestMapping("/study")  // URL 경로 "/study"로 시작하는 요청 처리
 @AllArgsConstructor  // 생성자를 자동으로 생성하여 의존성 주입을 간결하게 처리
 public class StudyController {
-    private StudyGroupRepository studyGroupRepository;  // 스터디 그룹 데이터베이스 접근 객체
-    private StudyMemberRepository studyMemberRepository;  // 스터디 멤버 데이터베이스 접근 객체
-    private UserRepository userRepository;  // 사용자 데이터베이스 접근 객체
-    private PostRepository postRepository;
-    private AvatarRepository avatarRepository;
-    private PostReactionRepository postReactionRepository;
+    private StudyGroupRepository studyGroupRepository;  // 스터디 그룹 관련 DB 접근 객체
+    private StudyMemberRepository studyMemberRepository;  // 스터디 멤버 관련 DB 접근 객체
+    private UserRepository userRepository;  // 사용자 관련 DB 접근 객체
+    private PostRepository postRepository;  // 게시글 관련 DB 접근 객체
+    private AvatarRepository avatarRepository;  // 아바타 이미지 관련 DB 접근 객체
+    private PostReactionRepository postReactionRepository;  // 게시글 반응 관련 DB 접근 객체
 
+    // =======================================================================================
+    // 아바타 이미지 변경
+    @ModelAttribute("user")
+    public UserWithAvatar addUser(@SessionAttribute("user") UserWithAvatar user) {
+        System.out.println("addUser");
+        return user;
+    }
 
     // =======================================================================================
     // 스터디 그룹 생성 핸들러
@@ -41,7 +49,7 @@ public class StudyController {
     @Transactional  // 트랜잭션 단위로 실행
     @RequestMapping("/create/verify")
     public String createVerifyHandle(@ModelAttribute StudyGroup studyGroup,
-                                     @SessionAttribute("user") User user) {
+                                     @SessionAttribute("user") UserWithAvatar user) {
 
         // 랜덤 ID 생성 (UUID의 마지막 8자리 사용)
         String randomId = UUID.randomUUID().toString().substring(24);
@@ -81,10 +89,10 @@ public class StudyController {
         // 검색어 가져오기
         String wordValue = word.get();
 
-        // 검색어를 포함하는 그룹 찾기 (이름 또는 목표에서 검색)
+        // 그룹 이름 또는 목표에 검색어가 포함된 그룹 목록 조회
         List<StudyGroup> result = studyGroupRepository.findByNameLikeOrGoalLike("%" + wordValue + "%");
 
-        // 검색 결과를 StudyGroupWithCreator 형태로 변환
+        // 검색 결과를 StudyGroupWithCreator 객체로 변환
         List<StudyGroupWithCreator> convertedResult = new ArrayList<>();
         for (StudyGroup one : result) {
             User found = userRepository.findById(one.getCreatorId());  // 생성자 정보 찾기
@@ -93,8 +101,9 @@ public class StudyController {
         }
 
         // 모델에 검색 결과 추가
-        model.addAttribute("count", convertedResult.size());
-        model.addAttribute("result", convertedResult);
+        model.addAttribute("count", convertedResult.size());  // 검색 결과 개수 추가
+        model.addAttribute("result", convertedResult);  // 검색 결과 추가
+
 
         return "study/search";  // 검색 결과 페이지 반환
     }
@@ -104,13 +113,13 @@ public class StudyController {
     // 사용자가 특정 그룹을 조회할 때, 현재 로그인한 사용자의 가입 상태를 함께 확인하여 보여줌
     @RequestMapping("/{id}")
     public String viewHandle(@PathVariable("id") String id, Model model,
-                             @SessionAttribute("user") User user) {
+                             @SessionAttribute("user") UserWithAvatar user) {
 
         // 그룹 정보 조회
         // 데이터베이스에서 해당 그룹 ID에 해당하는 그룹 정보를 가져옴
         StudyGroup group = studyGroupRepository.findById(id);
         if (group == null) {   // 그룹이 존재하지 않으면
-            return "redirect:/";  // 홈 페이지("/")로 리디렉션
+            return "redirect:/";  // 홈으로 리디렉션
         }
 
         // 현재 로그인한 사용자의 가입 상태 확인
@@ -122,13 +131,13 @@ public class StudyController {
         // 사용자가 가입하지 않은 경우
         if (status == null) {
             model.addAttribute("status", "NOT_JOINED");  // 가입하지 않음
-        // 사용자가 가입 신청했지만 아직 승인이 나지 않은 경우
+            // 사용자가 가입 신청했지만 아직 승인이 나지 않은 경우
         } else if (status.getJoinedAt() == null) {
             model.addAttribute("status", "PENDING");  // 승인 대기 중
-        // 사용자가 일반 멤버로 가입된 경우
+            // 사용자가 일반 멤버로 가입된 경우
         } else if (status.getRole().equals("멤버")) {
             model.addAttribute("status", "MEMBER");  // 일반 멤버
-        // 사용자가 그룹 리더인 경우
+            // 사용자가 그룹 리더인 경우
         } else {
             model.addAttribute("status", "LEADER");  // 리더
         }
@@ -182,12 +191,13 @@ public class StudyController {
         return "study/view";
     }
 
+
     // =======================================================================================
     // 스터디 그룹 가입 요청 핸들러
     @Transactional
     @RequestMapping("/{id}/join")
     public String joinHandle(@PathVariable("id") String id,
-                             @SessionAttribute("user") User user) {
+                             @SessionAttribute("user") UserWithAvatar user) {
 
         // 이미 가입한 그룹인지 여부를 확인할 변수
         boolean exist = false;
@@ -233,7 +243,7 @@ public class StudyController {
     // 그룹 탈퇴 핸들러
     @RequestMapping("/{groupId}/leave")
     public String leaveHandle(@PathVariable("groupId") String groupId,
-                              @SessionAttribute("user") User user, Model model) {
+                              @SessionAttribute("user") UserWithAvatar user, Model model) {
 
         String userId = user.getId();
         Map<String, String> map = Map.of("groupId", groupId, "userId", userId);
@@ -252,30 +262,37 @@ public class StudyController {
 
     // =======================================================================================
     // 가입 요청 철회 핸들러
-    @RequestMapping("/{groupId}/cancel")
-    public String cancelHandle(@PathVariable("groupId") String groupId,
-                               @SessionAttribute("user") User user, Model model) {
+    @RequestMapping("/{groupId}/cancel") // groupId를 URL 경로에서 받아오는 매핑 설정
+    public String cancelHandle(@PathVariable("groupId") String groupId,   // groupId를 URL에서 받아오는 파라미터
+                               @SessionAttribute("user") UserWithAvatar user,   // 세션에 저장된 user 정보를 받아옴
+                               Model model) {
 
+        // 세션에서 user 객체를 받아오고, userId를 추출
         String userId = user.getId();
+
+        // groupId와 userId를 Map으로 묶어 가입 요청 정보를 조회하기 위한 키 값으로 사용
         Map<String, String> map = Map.of("groupId", groupId, "userId", userId);
 
-        // 가입 요청 정보 조회
+        // studyMemberRepository에서 userId와 groupId를 기준으로 가입 요청 정보를 찾음
         StudyMember found = studyMemberRepository.findByUserIdAndGroupId(map);
 
-        // 가입 요청이 승인되지 않은 상태라면 삭제 가능
+        // 가입 요청이 존재하고, 가입이 승인되지 않은 상태에서 역할이 '멤버'인 경우에만 삭제 가능
         if (found != null && found.getJoinedAt() == null && found.getRole().equals("멤버")) {
+            // 가입 요청을 철회하기 위해 해당 가입 요청을 데이터베이스에서 삭제
             studyMemberRepository.deleteById(found.getId());
         }
 
-        return "redirect:/study/" + groupId; // 해당 그룹 페이지로 이동
+        // 철회 후 해당 그룹 페이지로 리다이렉트
+        return "redirect:/study/" + groupId; // 'groupId'를 이용하여 해당 그룹의 페이지로 리다이렉트
     }
+
 
     // =======================================================================================
     // 그룹 해산 핸들러 (그룹 생성자만 가능)
     @Transactional
     @RequestMapping("/{groupId}/remove")
     public String removeHandle(@PathVariable("groupId") String groupId,
-                               @SessionAttribute("user") User user) {
+                               @SessionAttribute("user") UserWithAvatar user) {
 
         StudyGroup studyGroup = studyGroupRepository.findById(groupId);
 
@@ -300,7 +317,7 @@ public class StudyController {
     @RequestMapping("/{groupId}/approve")
     public String approveHandle(@PathVariable("groupId") String groupId,
                                 @RequestParam("targetUserId") String targetUserId,
-                                @SessionAttribute("user") User user) {
+                                @SessionAttribute("user") UserWithAvatar user) {
 
         StudyGroup studyGroup = studyGroupRepository.findById(groupId);
 
@@ -327,7 +344,7 @@ public class StudyController {
     @RequestMapping("/{groupId}/post")
     public String postHandle(@PathVariable("groupId") String id,
                              @ModelAttribute Post post,
-                             @SessionAttribute("user") User user) {
+                             @SessionAttribute("user") UserWithAvatar user) {
 
         // 현재 로그인한 사용자의 ID를 게시글 작성자로 설정
         post.setWriterId(user.getId());
@@ -347,7 +364,7 @@ public class StudyController {
     // 글에 감정 남기기 요청 처리 핸들
     @RequestMapping("/{groupId}/post/{postId}/reaction")
     public String postReactionHandle(@ModelAttribute PostReaction postReaction,
-                                     @SessionAttribute("user") User user) {
+                                     @SessionAttribute("user") UserWithAvatar user) {
 
         // 사용자가 해당 게시글에 남긴 감정이 있는지 확인
         PostReaction found = postReactionRepository.findByWriterIdAndPostId(
