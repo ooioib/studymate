@@ -3,6 +3,7 @@ package org.codenova.studymate.controller;
 
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.LoginLog;
+import org.codenova.studymate.model.entity.User;
 import org.codenova.studymate.model.query.UserWithAvatar;
 import org.codenova.studymate.repository.AvatarRepository;
 import org.codenova.studymate.repository.LoginLogRepository;
@@ -21,13 +22,13 @@ public class MyController {
 
     @RequestMapping("/profile")
     public String profileHandle(Model model, @SessionAttribute("user") @Nullable UserWithAvatar user) {
-        // User user =(User)session.getAttribute("user");
+
         if (user == null) {
             return "redirect:/auth/login";
         }
+
         model.addAttribute("user", user);
         model.addAttribute("hiddenId", user.getId().substring(0, 2) + "******");
-
         LoginLog latestLog = loginLogRepository.findLatestByUserId(user.getId());
         model.addAttribute("latestLog", latestLog);
 

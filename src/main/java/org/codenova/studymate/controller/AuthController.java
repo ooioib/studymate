@@ -15,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
 @RequestMapping("/auth")
@@ -29,6 +28,7 @@ public class AuthController {
 
     @RequestMapping("/signup")
     public String signupHandle(Model model) {
+
         model.addAttribute("avatars", avatarRepository.findAll());
 
         return "auth/signup";
@@ -37,18 +37,18 @@ public class AuthController {
     @RequestMapping("/signup/verify")
     public String signupVerifyHandle(@ModelAttribute @Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            // 에러처리를 하고,
+            // 유효성 검사 실패 시 처리
             return "auth/signup/verify-failed";
         }
         if (userRepository.findById(user.getId()) != null) {
-            // 에러 처리하고
+            // 이미 존재하는 ID 처리
             return "auth/signup/verify-failed";
         }
         userRepository.create(user);
-        // 밴드 기준으로 가입이 성공하면 로그인 처리되고, 모임 개설로 리다이렉트를 시키는 걸로 확인함.
+
+        // 가입 성공 시 메인 페이지로 이동
         return "redirect:/index";
     }
-
 
     @RequestMapping("/login")
     public String loginHandle(Model model) {
@@ -59,19 +59,22 @@ public class AuthController {
     @RequestMapping("/login/verify")
     public String loginVerifyHandle(@RequestParam("id") String id,
                                     @RequestParam("password") String password,
+                                    Model model,
                                     HttpSession session) {
 
         UserWithAvatar found = userRepository.findWithAvatarById(id);
+
         if (found == null || !found.getPassword().equals(password)) {
+            // 로그인 실패 시 메시지를 모델에 추가하고 로그인 실패 페이지로 이동
 
-            return "auth/login/verify-failed";
-
+            model.addAttribute("errorMessage", "아이디 또는 비밀번호가 잘못되었습니다.");
+            return "auth/verify-failed";
         } else {
+            // 로그인 성공 시 처리
             userRepository.updateLoginCountByUserId(id);
             loginLogRepository.create(id);
 
             session.setAttribute("user", found);
-
             return "redirect:/index";
         }
     }
@@ -79,7 +82,6 @@ public class AuthController {
     @RequestMapping("/logout")
     public String logoutHandle(HttpSession session) {
         session.invalidate();
-
         return "redirect:/index";
     }
 }

@@ -8,6 +8,7 @@ import org.codenova.studymate.model.entity.User;
 import org.codenova.studymate.model.query.UserWithAvatar;
 import org.codenova.studymate.repository.AvatarRepository;
 import org.codenova.studymate.repository.StudyMemberRepository;
+import org.codenova.studymate.repository.UserRepository;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +23,6 @@ public class WelcomeController {
     private AvatarRepository avatarRepository;
     private StudyMemberRepository studyMemberRepository;
 
-
     @RequestMapping({"/", "/index"})
     public String indexHandle(@SessionAttribute("user") @Nullable UserWithAvatar user, Model model) {
 
@@ -31,8 +31,7 @@ public class WelcomeController {
 
         } else {
             model.addAttribute("user", user);
-
-            List<StudyMember> studyList = studyMemberRepository.findByUserId(user.getId());
+            var studyList = studyMemberRepository.findWithGroupDetailByUserId(user.getId());
             model.addAttribute("studyList", studyList);
 
             return "index-authenticated";

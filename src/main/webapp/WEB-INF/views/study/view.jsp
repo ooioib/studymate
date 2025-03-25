@@ -28,21 +28,21 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
 <div style="padding : 20px 0px;background-color: #F5F6F8;">
     <div class="study-main wrap">
         <div style="display: flex; gap:20px">
-            <div style="width: 200px; background-color: white ; padding : 12px">
+            <div style="width: 200px; background-color: white ; padding : 4px">
                 <h2>${group.name}</h2>
                 <div style="font-size : 0.8em">
                     멤버 <span>${group.memberCount}</span> •
                     리더 <span>${group.creatorId}</span>
                 </div>
                 <div style="font-size : 0.8em">
-                    개설일 <span>${group.createdAt}</span>
+                    개설일 <span>${group.createdAt.toString().replace('T', '  ')}</span>
                 </div>
                 ${status}
                 <c:choose>
                     <c:when test="${status == 'NOT_JOINED'}">
                         <p>
                             <a href="${pageContext.request.contextPath}/study/${group.id}/join">
-                                <button style="width: 100%; padding: 5px; font-size:1em;">스터디가입하기</button>
+                                <button style="width: 100%; padding: 5px; font-size:1em;">스터디 가입하기</button>
                             </a>
                         </p>
                     </c:when>
@@ -53,17 +53,19 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
                     </c:when>
                     <c:when test="${status == 'MEMBER'}">
                         <p>
-                            <button style="width: 100%; padding: 5px; font-size:1em;" disabled>스터티 탈퇴하기</button>
+                            <a href="${pageContext.request.contextPath}/study/${group.id}/leave">
+                                <button style="width: 100%; padding: 5px; font-size:1em;">스터디 탈퇴하기</button>
+                            </a>
                         </p>
                     </c:when>
                     <c:otherwise>
                         <p>
-                            <button style="width: 100%; padding: 5px; font-size:1em;" disabled>스터티 해산하기</button>
+                            <a href="${pageContext.request.contextPath}/study/${group.id}/remove">
+                                <button style="width: 100%; padding: 5px; font-size:1em;">스터디 해산하기</button>
+                            </a>
                         </p>
                     </c:otherwise>
                 </c:choose>
-
-
                 <c:choose>
                     <c:when test="${group.type == '공개'}">
                         <div style="font-size: 0.75em">
@@ -76,9 +78,7 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
                         </div>
                     </c:otherwise>
                 </c:choose>
-
             </div>
-
             <div style="flex:1">
                 <h3 style="border-bottom: 1px solid rgba(0, 0, 0, .3); padding-bottom : 10px">게시글</h3>
                 <form action="${pageContext.request.contextPath}/study/${group.id}/post">
@@ -111,6 +111,7 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
                                     <c:when test="${t.feeling == 'angry'}"><span>😡</span></c:when>
                                     <c:otherwise><span>😐</span></c:otherwise>
                                 </c:choose>
+                                <span>${t.count}</span>
                             </c:forEach>
                         </div>
                     </div>

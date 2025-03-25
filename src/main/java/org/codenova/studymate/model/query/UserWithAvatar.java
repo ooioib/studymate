@@ -15,5 +15,4 @@ public class UserWithAvatar {
     private int avatarId;
     private String avatarName;
     private String avatarUrl;
-
 }

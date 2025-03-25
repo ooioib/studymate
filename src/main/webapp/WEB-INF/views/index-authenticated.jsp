@@ -45,15 +45,20 @@ display: flex; align-items: center">
                     </div>
                 </div>
             </a>
+
             <c:forEach items="${studyList}" var="one">
                 <a href="${pageContext.request.contextPath}/study/${one.groupId}"
                    style="display: block; text-decoration: none">
                     <div style="border:1px solid rgba(0, 0, 0, .3); border-radius: 10px;
                                 width: 156px; height: 156px;flex-shrink: 0; overflow: hidden">
-                        <div style="background-color:#444; display: flex; width: 100%; height: 100%; justify-content: center; align-items:center">
+                        <div style="background-color:#444; display: flex;
+                            flex-direction: column;
+                            width: 100%; height: 100%; justify-content: center; align-items:center">
                             <h4 style="color:#F5F6F8">
-                                    ${one.groupId}
+                                    ${one.groupName}
                             </h4>
+                            <span style="display: inline-block; background-color: white;
+                                padding : 3px 10px; border-radius: 8px; font-size: small">${one.groupType}</span>
                         </div>
                     </div>
                 </a>
