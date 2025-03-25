@@ -9,11 +9,15 @@
         values( #{groupId}, #{postId}, #{feeling}, #{writerId } )
     </insert>
 
-    <select id="findByPostId" parameterType="int" resultType="postReaction" >
+    <select id="findByPostId" parameterType="int" resultType="postReaction">
         select * from post_reactions where post_id=#{postId}
     </select>
 
-    <select id="findByWriterIdAndPostId" parameterType="map" resultType="postReaction" >
+    <select id="findByWriterIdAndPostId" parameterType="map" resultType="postReaction">
         select * from post_reactions where writer_id=#{writerId} and post_id=#{postId}
     </select>
+
+    <delete id="deleteById" parameterType="int">
+        delete from post_reactions where id = #{id}
+    </delete>
 </mapper>

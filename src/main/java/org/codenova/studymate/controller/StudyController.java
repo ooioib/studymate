@@ -107,24 +107,28 @@ public class StudyController {
                              @SessionAttribute("user") User user) {
 
         // 그룹 정보 조회
+        // 데이터베이스에서 해당 그룹 ID에 해당하는 그룹 정보를 가져옴
         StudyGroup group = studyGroupRepository.findById(id);
-        if (group == null) {
-            return "redirect:/";  // 그룹이 존재하지 않으면 홈으로 이동
+        if (group == null) {   // 그룹이 존재하지 않으면
+            return "redirect:/";  // 홈 페이지("/")로 리디렉션
         }
 
-        // 현재 사용자의 가입 상태 확인
+        // 현재 로그인한 사용자의 가입 상태 확인
         Map<String, Object> map = new HashMap<>();
-        map.put("groupId", id);
-        map.put("userId", user.getId());
+        map.put("groupId", id);   // 조회할 그룹 ID
+        map.put("userId", user.getId());   // 현재 로그인한 사용자 ID
         StudyMember status = studyMemberRepository.findByUserIdAndGroupId(map);
 
-        // 가입 상태에 따라 다른 값을 모델에 추가
+        // 사용자가 가입하지 않은 경우
         if (status == null) {
             model.addAttribute("status", "NOT_JOINED");  // 가입하지 않음
+        // 사용자가 가입 신청했지만 아직 승인이 나지 않은 경우
         } else if (status.getJoinedAt() == null) {
             model.addAttribute("status", "PENDING");  // 승인 대기 중
+        // 사용자가 일반 멤버로 가입된 경우
         } else if (status.getRole().equals("멤버")) {
             model.addAttribute("status", "MEMBER");  // 일반 멤버
+        // 사용자가 그룹 리더인 경우
         } else {
             model.addAttribute("status", "LEADER");  // 리더
         }
@@ -132,29 +136,49 @@ public class StudyController {
         // 그룹 정보를 모델에 추가하고 페이지 반환
         model.addAttribute("group", group);
 
+        // 해당 그룹의 게시글 목록 조회
         List<Post> posts = postRepository.findByGroupId(id);
 
+        // 게시글 정보를 가공하여 저장할 리스트 생성
         List<PostMeta> postMetas = new ArrayList<>();
 
+        // 작성 시간을 '몇 분 전', '몇 시간 전'과 같이 보기 좋게 변환
         PrettyTime prettyTime = new PrettyTime();
+
+        // 게시글 리스트를 순회하면서 필요한 정보를 변환하여 postMetas 리스트에 추가
         for (Post post : posts) {
 
+            // 작성된 시간과 현재 시간의 차이를 초 단위로 계산
             long b = Duration.between(post.getWroteAt(), LocalDateTime.now()).getSeconds();
             System.out.println(b);
 
+            // 게시글 작성자의 정보 조회
+            User writer = userRepository.findById(post.getWriterId());
+
+            // 작성자의 프로필 이미지 조회
+            String writerAvatar = avatarRepository.findById(writer.getAvatarId()).getImageUrl();
+
+            // 게시글에 대한 반응(좋아요, 싫어요 등) 조회
+            List<PostReaction> reactions = postReactionRepository.findByPostId(post.getId());
+
+            // PostMeta 객체를 생성하여 변환된 게시글 정보를 저장
             PostMeta cvt = PostMeta.builder()
-                    .id(post.getId())
-                    .content(post.getContent())
-                    .writerName(userRepository.findById(post.getWriterId()).getName())
-                    .writerAvatar(avatarRepository.findById(userRepository.findById(post.getWriterId()).getAvatarId()).getImageUrl())
-                    .time(prettyTime.format(post.getWroteAt()))
-                    .reactions(postReactionRepository.findByPostId(post.getId()))
+                    .id(post.getId())                         // 게시글 ID
+                    .content(post.getContent())               // 게시글 내용
+                    .writerName(writer.getName())             // 작성자 이름
+                    .writerAvatar(writerAvatar)               // 작성자 프로필 이미지
+                    .time(prettyTime.format(post.getWroteAt())) // 변환된 시간
+                    .reactions(reactions)                     // 게시글에 대한 반응 정보
                     .build();
+
+            // 변환된 정보를 리스트에 추가
             postMetas.add(cvt);
         }
 
+        // 변환된 게시글 정보를 모델에 추가
         model.addAttribute("postMetas", postMetas);
 
+        // "study/view" 페이지를 반환
         return "study/view";
     }
 
@@ -165,29 +189,43 @@ public class StudyController {
     public String joinHandle(@PathVariable("id") String id,
                              @SessionAttribute("user") User user) {
 
+        // 이미 가입한 그룹인지 여부를 확인할 변수
         boolean exist = false;
+
+        // 사용자가 가입한 모든 그룹 목록을 가져옴
         List<StudyMember> list = studyMemberRepository.findByUserId(user.getId());
 
         // 사용자가 이미 가입한 그룹인지 확인
         for (StudyMember one : list) {
-            if (one.getGroupId().equals(id)) {
-                exist = true;
-                break;
+            if (one.getGroupId().equals(id)) {   // 현재 그룹 ID와 일치하는지 검사
+                exist = true;   // 이미 가입한 경우 exist = true 설정
+                break;   // 반복문 중단
             }
         }
-
+        // 가입한 적이 없는 경우에만 가입 요청 처리
         if (!exist) {
-            StudyMember member = StudyMember.builder().userId(user.getId()).groupId(id).role("멤버").build();
+            // 새 멤버 객체 생성 (기본 역할: "멤버")
+            StudyMember member = StudyMember.builder()
+                    .userId(user.getId())
+                    .groupId(id)
+                    .role("멤버")
+                    .build();
+
+            // 그룹 정보를 가져와서 공개/비공개 여부 확인
             StudyGroup group = studyGroupRepository.findById(id);
 
+            // 그룹이 공개 상태라면
             if (group.getType().equals("공개")) {
-                studyMemberRepository.createApproved(member); // 즉시 가입 승인
-                studyGroupRepository.addMemberCountById(id);
-            } else {
-                studyMemberRepository.createPending(member); // 가입 요청 대기 상태로 저장
+                studyMemberRepository.createApproved(member); // 바로 승인된 멤버로 등록
+                studyGroupRepository.addMemberCountById(id); // 그룹 멤버 수 증가
+            }
+            // 그룹이 비공개 상태라면
+            else {
+                studyMemberRepository.createPending(member); // 승인 대기 상태로 저장
             }
         }
 
+        // 가입 요청 후, 해당 그룹 페이지로 이동
         return "redirect:/study/" + id;
     }
 
@@ -291,10 +329,15 @@ public class StudyController {
                              @ModelAttribute Post post,
                              @SessionAttribute("user") User user) {
 
+        // 현재 로그인한 사용자의 ID를 게시글 작성자로 설정
         post.setWriterId(user.getId());
+
+        // 현재 시간을 작성 시간으로 설정
         post.setWroteAt(LocalDateTime.now());
         //  post.setGroupId();
         //  post.setContent();
+
+        // 게시글을 데이터베이스에 저장
         postRepository.create(post);
 
         return "redirect:/study/" + id;
@@ -306,17 +349,20 @@ public class StudyController {
     public String postReactionHandle(@ModelAttribute PostReaction postReaction,
                                      @SessionAttribute("user") User user) {
 
-        PostReaction found = postReactionRepository.findByWriterIdAndPostId(Map.of("writerId", user.getId(), "postId", postReaction.getPostId()));
+        // 사용자가 해당 게시글에 남긴 감정이 있는지 확인
+        PostReaction found = postReactionRepository.findByWriterIdAndPostId(
+                Map.of("writerId", user.getId(), "postId", postReaction.getPostId())   // userId와 postId를 Map 형태로 전달
+        );
 
-        if (found == null) {
-            postReaction.setWriterId(user.getId());
-            postReactionRepository.create(postReaction);
+        if (found != null) {   // 이미 감정이 남겨져 있을 경우
+            postReactionRepository.deleteById(found.getId());   // 기존 감정을 삭제
 
-        } else {
-    //      postReactionRepository.delecteById(found.getId());
-    //      postReactionRepository.create(postReaction);
+        } else {   // 그렇지 않으면 새 감정 추가
+            postReaction.setWriterId(user.getId());   // 현재 로그인한 사용자의 ID를 설정
+            postReactionRepository.create(postReaction);   // 새로운 감정을 데이터베이스에 저장
         }
 
+        // 원래 게시글 목록 페이지로 리디렉션 (해당 그룹의 게시글 목록 페이지로 이동)
         return "redirect:/study/" + postReaction.getGroupId();
     }
 }

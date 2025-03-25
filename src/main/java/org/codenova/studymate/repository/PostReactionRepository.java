@@ -24,4 +24,8 @@ public class PostReactionRepository {
     public PostReaction findByWriterIdAndPostId(Map map) {
         return sqlSessionTemplate.selectOne("postReaction.findByWriterIdAndPostId", map);
     }
+
+    public int deleteById(int id) {
+        return sqlSessionTemplate.delete("postReaction.deleteById", id);
+    }
 }
