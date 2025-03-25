@@ -19,18 +19,17 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 public class MyController {
     private LoginLogRepository loginLogRepository;
     private AvatarRepository avatarRepository;
-
     @RequestMapping("/profile")
     public String profileHandle(Model model, @SessionAttribute("user") @Nullable UserWithAvatar user) {
 
-        if (user == null) {
+        if(user == null) {
             return "redirect:/auth/login";
         }
 
-        model.addAttribute("user", user);
-        model.addAttribute("hiddenId", user.getId().substring(0, 2) + "******");
-        LoginLog latestLog = loginLogRepository.findLatestByUserId(user.getId());
-        model.addAttribute("latestLog", latestLog);
+        model.addAttribute("user",user);
+        model.addAttribute("hiddenId", user.getId().substring(0, 2)+"******");
+        LoginLog latestLog =loginLogRepository.findLatestByUserId(user.getId());
+        model.addAttribute("latestLog",latestLog);
 
         return "my/profile";
     }

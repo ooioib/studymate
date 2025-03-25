@@ -32,9 +32,7 @@ public class StudyGroupRepository {
         return sqlSessionTemplate.selectOne("studyGroup.findById", id);
     }
 
-    // 그룹 삭제
     public int deleteById(String id) {
         return sqlSessionTemplate.delete("studyGroup.deleteById", id);
     }
-
 }

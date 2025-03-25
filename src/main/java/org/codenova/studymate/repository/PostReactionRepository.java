@@ -2,6 +2,7 @@ package org.codenova.studymate.repository;
 
 import lombok.AllArgsConstructor;
 import org.codenova.studymate.model.entity.PostReaction;
+import org.codenova.studymate.model.query.FeelingStats;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -27,5 +28,9 @@ public class PostReactionRepository {
 
     public int deleteById(int id) {
         return sqlSessionTemplate.delete("postReaction.deleteById", id);
+    }
+
+    public List<FeelingStats> countFeelingByPostId(int postId) {
+        return sqlSessionTemplate.selectList("postReaction.countFeelingByPostId", postId);
     }
 }

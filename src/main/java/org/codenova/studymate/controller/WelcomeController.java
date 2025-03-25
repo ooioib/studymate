@@ -25,13 +25,14 @@ public class WelcomeController {
 
     @RequestMapping({"/", "/index"})
     public String indexHandle(@SessionAttribute("user") @Nullable UserWithAvatar user, Model model) {
-
         if (user == null) {
             return "index";
 
         } else {
             model.addAttribute("user", user);
+
             var studyList = studyMemberRepository.findWithGroupDetailByUserId(user.getId());
+
             model.addAttribute("studyList", studyList);
 
             return "index-authenticated";

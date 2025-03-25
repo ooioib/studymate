@@ -5,7 +5,6 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-
 import java.util.List;
 
 @Repository
@@ -25,5 +24,4 @@ public class LoginLogRepository {
     public LoginLog findLatestByUserId(String userId) {
         return sqlSessionTemplate.selectOne("loginLog.findLatestByUserId", userId);
     }
-
 }

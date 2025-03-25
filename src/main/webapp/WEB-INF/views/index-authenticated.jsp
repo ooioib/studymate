@@ -45,7 +45,6 @@ display: flex; align-items: center">
                     </div>
                 </div>
             </a>
-
             <c:forEach items="${studyList}" var="one">
                 <a href="${pageContext.request.contextPath}/study/${one.groupId}"
                    style="display: block; text-decoration: none">
@@ -66,6 +65,5 @@ display: flex; align-items: center">
         </div>
     </div>
 </div>
-
 </body>
 </html>

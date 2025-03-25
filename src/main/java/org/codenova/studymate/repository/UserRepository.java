@@ -6,6 +6,7 @@ import org.codenova.studymate.model.query.UserWithAvatar;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+
 @Repository
 @AllArgsConstructor
 public class UserRepository {

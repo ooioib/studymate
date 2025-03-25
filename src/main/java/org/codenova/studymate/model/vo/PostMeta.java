@@ -3,6 +3,7 @@ package org.codenova.studymate.model.vo;
 
 import lombok.*;
 import org.codenova.studymate.model.entity.PostReaction;
+import org.codenova.studymate.model.query.FeelingStats;
 
 import java.util.List;
 
@@ -16,6 +17,6 @@ public class PostMeta {
     private String writerAvatar;
     private String time;
 
-    private List<PostReaction> reactions;
+    private List<FeelingStats> reactions;
 
 }
