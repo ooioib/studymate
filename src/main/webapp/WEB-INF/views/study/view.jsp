@@ -79,11 +79,13 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
                     </c:otherwise>
                 </c:choose>
             </div>
+
             <div style="flex:1">
                 <h3 style="border-bottom: 1px solid rgba(0, 0, 0, .3); padding-bottom : 10px">게시글</h3>
                 <form action="${pageContext.request.contextPath}/study/${group.id}/post">
                     <input type="hidden" name="groupId" value="${group.id}"/>
-                    <textarea style="width: 100%; height:100px; resize: none; padding : 4px" name="content"></textarea>
+                    <textarea style="width: 100%; height:100px; resize: none; padding : 4px" name="content"
+                              id="content"></textarea>
                     <p style="text-align: right">
                         <button type="submit" style="padding : 4px 12px;">게시</button>
                     </p>
@@ -100,7 +102,7 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
                             </div>
                         </div>
                         <p style="font-size: small">
-                                ${one.id} |  ${one.content}
+                                ${one.id} | ${one.content}
                         </p>
                         <div>
                             <c:forEach items="${one.reactions}" var="t">
@@ -120,5 +122,19 @@ background-color: #afafaf; color:white" placeholder="스터디 검색" value="${
         </div>
     </div>
 </div>
+
+<!--자바스크립트 줄바꿈-->
+<script>
+    console.log(document.querySelector("#content"));
+    document.querySelector("#content").onkeydown = function (e) {
+        console.log(e);
+        if (e.key == "Enter" && (!e.shiftKey)) {
+            e.preventDefault();
+            console.log(e.target.parentNode);
+            e.target.parentNode.submit();
+        }
+    };
+</script>
+
 </body>
 </html>

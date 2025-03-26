@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Controller
-@RequestMapping("/study")
-@AllArgsConstructor
+@Controller  // Spring MVC 컨트롤러로 등록
+@RequestMapping("/study")  // URL 경로 "/study"로 시작하는 요청 처리
+@AllArgsConstructor  // 생성자를 자동으로 생성하여 의존성 주입을 간결하게 처리
 public class StudyController {
-    private StudyGroupRepository studyGroupRepository;
-    private StudyMemberRepository studyMemberRepository;
-    private UserRepository userRepository;
-    private PostRepository postRepository;
-    private AvatarRepository avatarRepository;
-    private PostReactionRepository postReactionRepository;
+    private StudyGroupRepository studyGroupRepository;  // 스터디 그룹 관련 DB 접근 객체
+    private StudyMemberRepository studyMemberRepository;  // 스터디 멤버 관련 DB 접근 객체
+    private UserRepository userRepository;  // 사용자 관련 DB 접근 객체
+    private PostRepository postRepository;  // 게시글 관련 DB 접근 객체
+    private AvatarRepository avatarRepository;  // 아바타 이미지 관련 DB 접근 객체
+    private PostReactionRepository postReactionRepository;  // 게시글 반응 관련 DB 접근 객체
 
     // =======================================================================================
     // 스터디 그룹 생성 핸들러
@@ -47,17 +47,17 @@ public class StudyController {
         String randomId = UUID.randomUUID().toString().substring(24);
 
         // 그룹 정보 설정
-        studyGroup.setId(randomId);
-        studyGroup.setCreatorId(user.getId());
+        studyGroup.setId(randomId);   // ID 할당
+        studyGroup.setCreatorId(user.getId());   // 현재 로그인한 사용자를 그룹 생성자로 설정
 
         // 그룹을 데이터베이스에 저장
         studyGroupRepository.create(studyGroup);
 
         // 그룹 생성자가 자동으로 '리더' 역할로 가입되도록 설정
         StudyMember studyMember = new StudyMember();
-        studyMember.setUserId(user.getId());
-        studyMember.setGroupId(studyGroup.getId());
-        studyMember.setRole("리더");
+        studyMember.setUserId(user.getId());   // 현재 로그인한 사용자 ID
+        studyMember.setGroupId(studyGroup.getId());   // 생성한 그룹 ID
+        studyMember.setRole("리더");   // 역할: 리더
 
         // 승인된 상태로 그룹 멤버 등록
         studyMemberRepository.createApproved(studyMember);
@@ -88,7 +88,7 @@ public class StudyController {
         List<StudyGroupWithCreator> convertedResult = new ArrayList<>();
 
         for (StudyGroup one : result) {
-            User found = userRepository.findById(one.getCreatorId());
+            User found = userRepository.findById(one.getCreatorId());  // 생성자 정보 찾기
             StudyGroupWithCreator c = StudyGroupWithCreator.builder().group(one).creator(found).build();
             convertedResult.add(c);
         }
@@ -149,47 +149,65 @@ public class StudyController {
         for (Post post : posts) {
 
             PostMeta cvt = PostMeta.builder()
-                    .id(post.getId())
-                    .content(post.getContent())
-                    .writerName(userRepository.findById(post.getWriterId()).getName())
-                    .writerAvatar(avatarRepository.findById(userRepository.findById(post.getWriterId()).getAvatarId()).getImageUrl())
-                    .time(prettyTime.format(post.getWroteAt()))
-                    .reactions(postReactionRepository.countFeelingByPostId(post.getId()))
+                    .id(post.getId())   // 게시글 ID
+                    .content(post.getContent())   // 게시글 내용
+                    .writerName(userRepository.findById(post.getWriterId()).getName())   // 작성자 이름
+                    .writerAvatar(avatarRepository.findById(userRepository.findById(post.getWriterId()).getAvatarId()).getImageUrl())    // 작성자 프로필 이미지
+                    .time(prettyTime.format(post.getWroteAt()))   // 변환된 시간
+                    .reactions(postReactionRepository.countFeelingByPostId(post.getId()))   // 게시글에 대한 반응 정보
                     .build();
+
+            // 변환된 정보를 리스트에 추가
             postMetas.add(cvt);
         }
 
+        // 변환된 게시글 정보를 모델에 추가
         model.addAttribute("postMetas", postMetas);
 
+        // "study/view" 페이지를 반환
         return "study/view";
     }
 
-
+    // =======================================================================================
+    // 스터디 그룹 가입 요청 핸들러
     @Transactional
     @RequestMapping("/{id}/join")
     public String joinHandle(@PathVariable("id") String id, @SessionAttribute("user") UserWithAvatar user) {
 
+        // 이미 가입한 그룹인지 여부를 확인할 변수
         boolean exist = false;
+
+        // 사용자가 가입한 모든 그룹 목록을 가져옴
         List<StudyMember> list = studyMemberRepository.findByUserId(user.getId());
+
+        // 사용자가 이미 가입한 그룹인지 확인
         for (StudyMember one : list) {
-            if (one.getGroupId().equals(id)) {
-                exist = true;
-                break;
+            if (one.getGroupId().equals(id)) {   // 현재 그룹 ID와 일치하는지 검사
+                exist = true;   // 이미 가입한 경우 exist = true 설정
+                break;   // 반복문 중단
             }
         }
 
+        // 가입한 적이 없는 경우에만 가입 요청 처리
         if (!exist) {
+            // 새 멤버 객체 생성 (기본 역할: "멤버")
             StudyMember member = StudyMember.builder().
                     userId(user.getId()).groupId(id).role("멤버").build();
+
+            // 그룹 정보를 가져와서 공개/비공개 여부 확인
             StudyGroup group = studyGroupRepository.findById(id);
+            // 그룹이 공개 상태라면
             if (group.getType().equals("공개")) {
-                studyMemberRepository.createApproved(member);
-                studyGroupRepository.addMemberCountById(id);
-            } else {
-                studyMemberRepository.createPending(member);
+                studyMemberRepository.createApproved(member); // 바로 승인된 멤버로 등록
+                studyGroupRepository.addMemberCountById(id); // 그룹 멤버 수 증가
+            }
+            // 그룹이 비공개 상태라면
+            else {
+                studyMemberRepository.createPending(member); // 승인 대기 상태로 저장
             }
         }
 
+        // 가입 요청 후, 해당 그룹 페이지로 이동
         return "redirect:/study/" + id;
     }
 
@@ -272,23 +290,29 @@ public class StudyController {
         return "redirect:/study/" + id;
     }
 
+    // =======================================================================================
     // 글에 감정 남기기 요청 처리 핸들
     @RequestMapping("/{groupId}/post/{postId}/reaction")
     public String postReactionHandle(@ModelAttribute PostReaction postReaction, @SessionAttribute("user") UserWithAvatar user) {
 
+
+        // 사용자가 해당 게시글에 남긴 감정이 있는지 확인
         PostReaction found =
                 postReactionRepository.findByWriterIdAndPostId(Map.of("writerId", user.getId(), "postId", postReaction.getPostId()));
 
-        if (found != null) {
-            postReactionRepository.deleteById(found.getId());
+        if (found != null) {   // 이미 감정이 남겨져 있을 경우
+            postReactionRepository.deleteById(found.getId());    // 기존 감정을 삭제
         }
 
-        postReaction.setWriterId(user.getId());
-        postReactionRepository.create(postReaction);
+        // 그렇지 않으면 새 감정 추가
+        postReaction.setWriterId(user.getId());   // 현재 로그인한 사용자의 ID를 설정
+        postReactionRepository.create(postReaction);    // 새로운 감정을 데이터베이스에 저장
 
         return "redirect:/study/" + postReaction.getGroupId();
     }
 
+    // =======================================================================================
+    // 아바타 이미지 변경
     @ModelAttribute("user")
     public UserWithAvatar addUser(@SessionAttribute("user") UserWithAvatar user) {
         System.out.println("addUser...");
